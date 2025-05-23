@@ -27,6 +27,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
   <depend>message_logger</depend>
   <depend>ethercat_sdk_master</depend>
-  <depend>yaml_cpp_vendor</depend>
+  <depend>yaml-cpp</depend>
 
 </package>

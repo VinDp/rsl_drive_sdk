@@ -27,65 +27,128 @@
 namespace rsl_drive_sdk
 {
 
-DriveCalibrator::DriveCalibrator(DriveEthercatDevice::SharedPtr drive)
-:_drive(drive)
-{
-
-}
-
-bool DriveCalibrator::calibrate(
-  const calibration::CalibrationModeEnum calibrationModeEnum,
-  const bool gearAndJointEncoderHomingAbsolute,
-  const double gearAndJointEncoderHomingNewJointPosition)
-{
-    //1. Check if drive is calibrate state
-  if(_drive->getActiveStateEnum() != fsm::StateEnum::Calibrate) {
-    MELO_ERROR_STREAM("Device: " << _drive->getName() << ":" << _drive->getAddress() <<
-        " needs to be in calibrate state for calibration, is in: " << _drive->getActiveStateEnum());
-    return false;
+  DriveCalibrator::DriveCalibrator(DriveEthercatDevice::SharedPtr drive)
+      : _drive(drive)
+  {
   }
-  using cme = calibration::CalibrationModeEnum;
-  switch (calibrationModeEnum) {
+
+  bool DriveCalibrator::calibrate(
+      const calibration::CalibrationModeEnum calibrationModeEnum,
+      const bool gearAndJointEncoderHomingAbsolute,
+      const double gearAndJointEncoderHomingNewJointPosition)
+  {
+    // 1. Check if drive is calibrate state
+    if (_drive->getActiveStateEnum() != fsm::StateEnum::Calibrate)
+    {
+      MELO_ERROR_STREAM("Device: " << _drive->getName() << ":" << _drive->getAddress() << " needs to be in calibrate state for calibration, is in: " << _drive->getActiveStateEnum());
+      return false;
+    }
+    using cme = calibration::CalibrationModeEnum;
+    switch (calibrationModeEnum)
+    {
     case cme::GearAndJointEncoderHoming:
+    {
+      /* First send new joint position (it will be wrapped in the firmware if outside of [-pi, pi)).
+       * There are two ways of calibrating the position offset:
+       * Absolute: The new joint position will be set as the current.
+       * Relative: The new joint position will be set as the new zero.
+       */
+      double newJointPosition = gearAndJointEncoderHomingNewJointPosition;
+      if (!gearAndJointEncoderHomingAbsolute)
       {
-        /* First send new joint position (it will be wrapped in the firmware if outside of [-pi, pi)).
-             * There are two ways of calibrating the position offset:
-             * Absolute: The new joint position will be set as the current.
-             * Relative: The new joint position will be set as the new zero.
-             */
-        double newJointPosition = gearAndJointEncoderHomingNewJointPosition;
-        if (!gearAndJointEncoderHomingAbsolute) {
-          ReadingExtended reading;
-          _drive->getReading(reading);
-          newJointPosition += reading.getState().getJointPosition();
-        }
-        _drive->sendCalibrationGearAndJointEncoderHomingNewJointPosition(newJointPosition);
-        [[fallthrough]];
+        ReadingExtended reading;
+        _drive->getReading(reading);
+        newJointPosition += reading.getState().getJointPosition();
       }
-    case cme::FrictionEstimation: [[fallthrough]];
-    case cme::ImuGyroscopeDcBias: [[fallthrough]];
-    case cme::MotorEncoderOffset: [[fallthrough]];
-    case cme::GearJointEncoderOffset: [[fallthrough]];
+      _drive->sendCalibrationGearAndJointEncoderHomingNewJointPosition(newJointPosition);
+      [[fallthrough]];
+    }
+    case cme::FrictionEstimation:
+      [[fallthrough]];
+    case cme::ImuGyroscopeDcBias:
+      [[fallthrough]];
+    case cme::MotorEncoderOffset:
+      [[fallthrough]];
+    case cme::GearJointEncoderOffset:
+      [[fallthrough]];
     case cme::MotorEncoderParameters:
+    {
+      MELO_INFO_STREAM("Starting calibration: " << calibrationModeEnum);
+      _drive->startCalibration(calibrationModeEnum);
+      bool calib_running = true;
+      size_t runs = 0;
+      while (calib_running)
       {
-        MELO_INFO_STREAM("Starting calibration: " << calibrationModeEnum);
-        _drive->startCalibration(calibrationModeEnum);
-        bool calib_running = true;
-        size_t runs = 0;
-        while(calib_running) {
-          _drive->calibrationIsRunning(calib_running);
-          std::this_thread::sleep_for(std::chrono::milliseconds(100));
-          runs++;
-          if(runs > 4000) { // More than 240s
-            return false;
-          }
+        _drive->calibrationIsRunning(calib_running);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        runs++;
+        if (runs > 4000)
+        { // More than 240s
+          return false;
         }
-        return true;
       }
-      break;
+      return true;
+    }
+    break;
     default:
       return false;
+    }
   }
-}
+
+  void DriveCalibrator::start_calibration(
+      const calibration::CalibrationModeEnum calibrationModeEnum,
+      const bool gearAndJointEncoderHomingAbsolute ,
+      const double gearAndJointEncoderHomingNewJointPosition )
+  {
+    // 1. Check if drive is calibrate state
+    if (_drive->getActiveStateEnum() != fsm::StateEnum::Calibrate)
+    {
+      MELO_ERROR_STREAM("Device: " << _drive->getName() << ":" << _drive->getAddress() << " needs to be in calibrate state for calibration, is in: " << _drive->getActiveStateEnum());
+      throw std::runtime_error("Device is not in calibration mode");
+    }
+
+    using cme = calibration::CalibrationModeEnum;
+
+    switch (calibrationModeEnum)
+    {
+    case cme::GearAndJointEncoderHoming:
+    {
+      /* First send new joint position (it will be wrapped in the firmware if outside of [-pi, pi)).
+       * There are two ways of calibrating the position offset:
+       * Absolute: The new joint position will be set as the current.
+       * Relative: The new joint position will be set as the new zero.
+       */
+      double newJointPosition = gearAndJointEncoderHomingNewJointPosition;
+      if (!gearAndJointEncoderHomingAbsolute)
+      {
+        ReadingExtended reading;
+        _drive->getReading(reading);
+        newJointPosition += reading.getState().getJointPosition();
+      }
+      _drive->sendCalibrationGearAndJointEncoderHomingNewJointPosition(newJointPosition);
+      [[fallthrough]];
+    }
+    case cme::FrictionEstimation:
+      [[fallthrough]];
+    case cme::ImuGyroscopeDcBias:
+      [[fallthrough]];
+    case cme::MotorEncoderOffset:
+      [[fallthrough]];
+    case cme::GearJointEncoderOffset:
+      [[fallthrough]];
+    case cme::MotorEncoderParameters:
+    {
+      MELO_INFO_STREAM("Starting calibration: " << calibrationModeEnum);
+      if (!_drive->startCalibration(calibrationModeEnum))
+      {
+        throw std::runtime_error("Error starting calibration");
+      }
+    }
+    break;
+    default:
+      return;
+    }
+    
+  }
 
 }

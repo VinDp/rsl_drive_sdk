@@ -22,23 +22,41 @@
  */
 #pragma once
 
-
 #include "rsl_drive_sdk/Drive.hpp"
-
 
 namespace rsl_drive_sdk
 {
-class DriveCalibrator
-{
-public:
-  DriveCalibrator(DriveEthercatDevice::SharedPtr drive);
+  class DriveCalibrator
+  {
+  public:
+    DriveCalibrator(DriveEthercatDevice::SharedPtr drive);
 
-  bool calibrate(
-    const calibration::CalibrationModeEnum calibrationModeEnum,
-    const bool gearAndJointEncoderHomingAbsolute = true,
-    const double gearAndJointEncoderHomingNewJointPosition = 0.0);
+    bool calibrate(
+        const calibration::CalibrationModeEnum calibrationModeEnum,
+        const bool gearAndJointEncoderHomingAbsolute = true,
+        const double gearAndJointEncoderHomingNewJointPosition = 0.0);
 
-private:
-  DriveEthercatDevice::SharedPtr _drive;
-};
+    /**
+     * @brief start_calibration - run calibration non blocking
+     * @return false als long as calibration is running
+     * @throws on error
+     */
+    void start_calibration(
+        const calibration::CalibrationModeEnum calibrationModeEnum,
+        const bool gearAndJointEncoderHomingAbsolute = true,
+        const double gearAndJointEncoderHomingNewJointPosition = 0.0);
+
+    /**
+     * @brief is_calibration_running - check if there is currently a calibration running
+     */
+    bool is_calibration_running()
+    {
+      bool calib_running = true;
+      _drive->calibrationIsRunning(calib_running);
+      return calib_running;
+    }
+
+  private:
+    DriveEthercatDevice::SharedPtr _drive;
+  };
 }

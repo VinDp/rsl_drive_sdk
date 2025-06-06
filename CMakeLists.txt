@@ -3,7 +3,7 @@ project(rsl_drive_sdk)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(yaml_cpp_vendor REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 add_definitions(-DMELO_MIN_SEVERITY=MELO_SEVERITY_INFO)
 add_definitions(-DMELO_USE_COUT)
@@ -29,10 +29,12 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 ament_target_dependencies(${PROJECT_NAME}
   ethercat_sdk_master
-  yaml_cpp_vendor
+  
 )
 
-
+target_link_libraries(${PROJECT_NAME}
+  yaml-cpp 
+)
 
 
 
@@ -47,7 +49,7 @@ ament_export_libraries(
 
 ament_export_dependencies(
   ethercat_sdk_master
-  yaml_cpp_vendor
+  yaml-cpp
 
 )
 

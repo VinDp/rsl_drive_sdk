@@ -24,6 +24,8 @@
  */
 #pragma once
 
+#include <string>
+
 // rsl_drive_sdk
 #include "rsl_drive_sdk/State.hpp"
 

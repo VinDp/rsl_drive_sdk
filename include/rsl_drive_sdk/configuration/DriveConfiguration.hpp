@@ -30,6 +30,8 @@
 #include <mutex>
 #include <string>
 #include <optional>
+#include <limits>
+#include <map>
 
 // yaml tools
 #include <yaml-cpp/yaml.h>

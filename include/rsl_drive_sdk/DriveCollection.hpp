@@ -29,6 +29,9 @@
 #include <unistd.h>
 #include <unordered_map>
 #include <assert.h>
+#include <memory>
+#include <string>
+#include <vector>
 
 // rsl_drive_sdk
 #include "rsl_drive_sdk/Drive.hpp"

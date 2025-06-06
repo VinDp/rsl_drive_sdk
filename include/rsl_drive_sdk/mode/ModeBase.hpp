@@ -28,6 +28,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <string>
 
 // rsl_drive_sdk
 #include "rsl_drive_sdk/mode/ModeEnum.hpp"

@@ -24,6 +24,8 @@
  */
 #pragma once
 
+#include <map>
+
 // rsl_drive_sdk
 #include "rsl_drive_sdk/fsm/StateBase.hpp"
 #include "rsl_drive_sdk/mode/ModeEnum.hpp"

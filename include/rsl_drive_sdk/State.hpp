@@ -26,6 +26,7 @@
 
 // std
 #include <ostream>
+#include <string>
 
 // any measurements
 

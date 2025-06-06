@@ -29,6 +29,9 @@
 #include <cstdint>
 #include <map>
 #include <mutex>
+#include <functional>
+#include <memory>
+#include <string>
 
 // rsl_drive_sdk
 

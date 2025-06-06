@@ -26,6 +26,7 @@
 
 // std
 #include <functional>
+#include <string>
 
 // rsl_drive_sdk
 #include "rsl_drive_sdk/ReadingExtended.hpp"

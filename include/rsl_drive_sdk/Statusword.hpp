@@ -28,6 +28,7 @@
 #include <chrono>
 #include <mutex>
 #include <vector>
+#include <string>
 
 // rsl_drive_sdk
 #include "message_logger/message_logger.hpp"

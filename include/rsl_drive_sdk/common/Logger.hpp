@@ -26,6 +26,7 @@
 
 // std
 #include <map>
+#include <string>
 
 // rsl_drive_sdk
 #include "rsl_drive_sdk/common/Log.hpp"

@@ -27,6 +27,7 @@
 // std
 #include <map>
 #include <mutex>
+#include <string>
 
 // rsl_drive_sdk
 #include "rsl_drive_sdk/fsm/StateBase.hpp"

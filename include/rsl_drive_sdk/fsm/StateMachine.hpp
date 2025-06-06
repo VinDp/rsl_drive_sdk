@@ -48,7 +48,7 @@ protected:
   std::map<StateEnum, StateBasePtr> states_;
 
 public:
-  StateMachine(DriveEthercatDevice& rsl_drive_sdk);
+  explicit StateMachine(DriveEthercatDevice& rsl_drive_sdk);
   virtual ~StateMachine();
 
   void updateActiveState(const StateEnum newActiveStateEnum);

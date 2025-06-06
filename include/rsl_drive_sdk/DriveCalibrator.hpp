@@ -31,7 +31,7 @@ namespace rsl_drive_sdk
 class DriveCalibrator
 {
 public:
-  DriveCalibrator(DriveEthercatDevice::SharedPtr drive);
+  explicit DriveCalibrator(DriveEthercatDevice::SharedPtr drive);
 
   bool calibrate(const calibration::CalibrationModeEnum calibrationModeEnum,
                  const bool gearAndJointEncoderHomingAbsolute = true,

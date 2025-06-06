@@ -56,7 +56,7 @@ struct Version
    * Create a version number by parsing a string of the form "major.minor.patch".
    * @param string String.
    */
-  Version(const std::string& string);
+  explicit Version(const std::string& string);
 
   /*!
    * Create a version number by parsing a string of the form "major.minor.patch".

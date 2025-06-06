@@ -24,6 +24,8 @@
  */
 #pragma once
 
+#include <string>
+
 #include "rsl_drive_sdk/configuration/DriveConfiguration.hpp"
 namespace rsl_drive_sdk
 {

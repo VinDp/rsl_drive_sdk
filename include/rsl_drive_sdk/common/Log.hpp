@@ -55,7 +55,7 @@ public:
    * Constructor.
    * @param name Name of the log.
    */
-  Log(const std::string name) : name_(name), stamp_(std::chrono::system_clock::now())
+  explicit Log(const std::string name) : name_(name), stamp_(std::chrono::system_clock::now())
   {
   }
 

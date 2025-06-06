@@ -67,7 +67,7 @@ public:
   /*!
    * Constructor.
    */
-  DriveCollection(const DrivesVector& drives);
+  explicit DriveCollection(const DrivesVector& drives);
 
   /*!
    * Destructor.
